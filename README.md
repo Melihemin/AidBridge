@@ -1,50 +1,51 @@
-# 📌 Deprem Yardım Eleştirme ve Afet Yönetim Sistemi
+# 📌 AidBridge - Earthquake Aid Evaluation and Disaster Management System
 
-## 📖 Proje Tanımı
+## 📖 Project Description
 
-**Deprem Yardım Eleştirme ve Afet Yönetim Sistemi**, afet sonrası ihtiyaç tespiti, yardım dağıtımı, geri bildirim, anlık deprem takibi ve bağış yönetimi gibi süreçleri bir araya getiren yapay zekâ destekli bir platformdur. Kullanıcılar sistem üzerinden yardım talebinde bulunabilir, yardımları değerlendirebilir, bağış yapabilir ve acil durumlara göre en uygun toplanma alanına yönlendirilebilir.
+**The Earthquake Aid Evaluation and Disaster Management System** is an AI-powered platform that integrates post-disaster need assessment, aid distribution, feedback collection, real-time earthquake tracking, and donation management. Users can request aid, provide feedback, donate, and get directions to the nearest assembly area in case of emergencies.
 
-## 🎯 Amaçlar
+## 🎯 Objectives
 
-- 🎯 Afet yardım süreçlerini **şeffaf, hızlı ve etkili** hâle getirmek  
-- 🧭 Gerçek zamanlı veriyle hareket eden **karar destek sistemleri** sunmak  
-- 🙌 Yardım alanların deneyim ve ihtiyaçlarını sistematik olarak değerlendirmek  
-- 🧠 Yapay zekâ ile **önceliklendirme** ve kaynak optimizasyonu sağlamak  
-- 💬 Vatandaşları, bağışçıları ve yetkilileri tek platformda buluşturmak  
+- 🎯 Make disaster aid processes **transparent, fast, and efficient**  
+- 🧭 Provide **decision support systems** powered by real-time data  
+- 🙌 Systematically evaluate aid recipients' needs and experiences  
+- 🧠 Ensure **prioritization and resource optimization** using AI  
+- 💬 Unite citizens, donors, and authorities on a single platform  
 
-## 🛠️ Özellikler
+## 🛠️ Features
 
-- ✅ Yardım başvuru formu (kişisel, konum, ihtiyaç ve sağlık bilgileri)  
-- ✅ Yardım memnuniyet / eleştiri / öneri bildirimi  
-- ✅ Gerçek zamanlı **deprem verisi ve harita entegrasyonu** (AFAD / Kandilli API)  
-- ✅ Kullanıcının konumuna göre **en yakın toplanma alanını gösterme**  
-- ✅ Harita üzerinde **navigasyon yönlendirmesi** (Google Maps API ile)  
-- ✅ Bağış yapabilme
-- ✅ Yapay zekâ destekli otomatik **önceliklendirme ve sınıflandırma** (örneğin: çocuklu aile, hasta birey vb.)  
+- ✅ Aid request form (personal, location, needs, and health information)  
+- ✅ Aid feedback / complaint / suggestion submission  
+- ✅ Real-time **earthquake tracking and map integration** (via AFAD / Kandilli APIs)  
+- ✅ Displays the **nearest emergency assembly area** based on user location  
+- ✅ **Navigation support** via map (Google Maps API integration)  
+- ✅ Ability to donate directly through the system  
+- ✅ AI-powered **automatic prioritization and classification**  
+  - (e.g., families with children, individuals with medical conditions, etc.)  
 
-## 🧠 Yapay Zekâ Entegrasyonu
- 
-- 🤖 **Önceliklendirme Motoru**: Yaş, kişi sayısı, sağlık durumu, barınma ihtiyacı gibi değişkenlere göre yardım taleplerini sıralar  ()
-- 🗺️ **Kritik Bölge Tespiti**: Yoğun yardım çağrılarının geldiği bölgeleri işaretler  
-- 🧭 **Toplanma Alanı Tahminleme**: Alternatif alan önerileri sunar (toplanma alanı doluysa)  
-- 💡 **Yapay Zekâ Karar Asistanı**: Yetkili kullanıcıya en uygun müdahale sıralamasını önerir  
+## 🧠 AI Integration
 
-## 🖥️ Kullanılan Teknolojiler
+- 🤖 **Prioritization Engine**: Ranks aid requests based on variables like age, number of people, health status, and shelter needs  
+- 🗺️ **Critical Zone Detection**: Highlights regions with dense aid requests  
+- 🧭 **Assembly Point Prediction**: Recommends alternative gathering points if one is overcrowded  
+- 💡 **AI Decision Assistant**: Suggests optimal intervention sequences to authorities  
 
-| Katman             | Teknoloji                                  |
+## 🖥️ Technologies Used
+
+| Layer              | Technology                                  |
 |--------------------|---------------------------------------------|
-| Backend            | Python (FastAPI) |
+| Backend            | Python (FastAPI)                            |
 | Frontend           | Bootstrap                                   |
-| Veritabanı         | SQL                                         |
-| Harita & Navigasyon| Leaflet.js, Google Maps API, OpenStreetMap  |
-| Deprem API         | AFAD, Kandilli Rasathanesi                  |
-| Yapay Zekâ         | Gemini API ve Langchain Entegrasyonu        |
+| Database           | SQL                                         |
+| Map & Navigation   | Leaflet.js, Google Maps API, OpenStreetMap  |
+| Earthquake APIs    | AFAD, Kandilli Observatory                  |
+| Artificial Intelligence | Gemini API and Langchain Integration     |
 
-
-## 🚀 Kurulum
+## 🚀 Setup
 
 ```bash
 git clone https://github.com/Melihemin/AidBridge/
 cd AidBridge
-!pip install -r requirements.txt
-python main.py OR uvicorn main:app --reload 
+pip install -r requirements.txt
+python main.py  # or use the following for live development
+uvicorn main:app --reload
