@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toplanma Alanları - Deprem Yardım Platformu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
+    <style>
+        :root {
+            --primary-red: #e30613;
+            --secondary-red: #ff3b43;
+            --dark-red: #b80510;
+            --light-gray: #f9f9f9;
+            --dark-gray: #333333;
+            --box-shadow: 0 10px 15px rgba(227, 6, 19, 0.1);
+            --border-radius: 12px;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-gray);
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar {
+            background-color: var(--primary-red);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 1rem 2rem;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+            text-decoration: none;
+        }
+
+        .navbar-nav {
+            display: flex;
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .navbar-nav .nav-item {
+            margin: 0 0.5rem;
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .navbar-collapse {
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-toggler {
+            border: none;
+            background-color: transparent;
+            color: white;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .d-flex {
+            display: flex;
+        }
+
+        .me-1, .me-2 {
+            margin-right: 0.5rem;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--dark-red), var(--primary-red));
+            color: white;
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .hero-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('https://via.placeholder.com/1200x400');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+
+        .toplanma-section {
+            padding: 3rem 2rem;
+        }
+
+        .toplanma-section h2 {
+            text-align: center;
+            font-size: 2rem;
+            color: var(--dark-gray);
+            margin-bottom: 2rem;
+        }
+
+        .location-options {
+            display: flex;
+            justify-content: space-between;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .option-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            width: 48%;
+            min-width: 280px;
+            transition: transform 0.3s ease;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-control {
+            padding: 0.75rem;
+            width: 100%;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 1rem;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-red);
+            border: none;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-red);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 2px solid var(--primary-red);
+            color: var(--primary-red);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary-red);
+            color: white;
+        }
+
+        .btn-light {
+            background-color: white;
+            border: none;
+            color: var(--primary-red);
+        }
+
+        .results-container {
+            margin-top: 2rem;
+        }
+
+        .loading {
+            text-align: center;
+            font-size: 1.5rem;
+            color: var(--primary-red);
+            display: none;
+        }
+
+        footer {
+            background-color: var(--dark-red);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .location-options {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .option-card {
+                width: 100%;
+                margin-bottom: 1.5rem;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .navbar-collapse {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .navbar-collapse.show {
+                display: flex;
+            }
+
+            .navbar-nav {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .d-flex {
+                margin-top: 1rem;
+                justify-content: center;
+            }
+        }
+
+        .map-container {
+            margin-top: 1.5rem;
+            height: 400px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--primary-red);
+        }
+
+        .infowindow-content {
+            padding: 8px;
+            text-align: center;
+        }
+
+        .alert-success {
+            background-color: #e8f5e9;
+            border-color: #c8e6c9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .location-details {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .location-icon {
+            margin-right: 10px;
+            color: var(--primary-red);
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <i class="fas fa-hand-holding-medical me-2"></i>AidBridge - AFET YARDIM MERKEZİ
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/"><i class="fas fa-home me-1"></i> Ana Sayfa</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/aid/"><i class="fas fa-list-alt me-1"></i> Yardım Talepleri</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/map"><i class="fas fa-map-marked-alt me-1"></i> Deprem Haritası</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"><i class="fas fa-info-circle me-1"></i> Bağış Yap</a>
+                </li>
+            </ul>
+            <div class="d-flex align-items-center">
+                <a href="/find_area" class="btn btn-light">
+                    <i class="fas fa-map-marker-alt me-1"></i> Toplanma Alanı Bul
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+    <main>
+        <section class="toplanma-section">
+            <h2>En Yakın Toplanma Alanlarını Bulun</h2>
+            <div class="location-options">
+                <div class="option-card">
+                    <h3>Konumunuzu Kullanın</h3>
+                    <p>Mevcut konumunuza en yakın toplanma alanlarını görmek için:</p>
+                    <button id="shareLocationBtn" class="btn btn-primary">Konumumu Paylaş</button>
+                    <div id="locationStatus" class="mt-3"></div>
+                    <div id="mapContainer" class="map-container" style="display:none;"></div>
+                </div>
+
+                <div class="option-card">
+                    <h3>İl ve İlçe Seçin</h3>
+                    <form id="locationForm">
+                        <div class="form-group">
+                            <label for="il">İl:</label>
+                            <select id="il" name="il" required class="form-control">
+                                <option value="">Seçiniz</option>
+                                <option value="Adana">Adana</option>
+                                <option value="Adıyaman">Adıyaman</option>
+                                <option value="Afyonkarahisar">Afyonkarahisar</option>
+                                <option value="Ağrı">Ağrı</option>
+                                <option value="Aksaray">Aksaray</option>
+                                <option value="Amasya">Amasya</option>
+                                <option value="Ankara">Ankara</option>
+                                <option value="Antalya">Antalya</option>
+                                <option value="Ardahan">Ardahan</option>
+                                <option value="Artvin">Artvin</option>
+                                <option value="Aydın">Aydın</option>
+                                <option value="Balıkesir">Balıkesir</option>
+                                <option value="Bartın">Bartın</option>
+                                <option value="Batman">Batman</option>
+                                <option value="Bayburt">Bayburt</option>
+                                <option value="Bilecik">Bilecik</option>
+                                <option value="Bingöl">Bingöl</option>
+                                <option value="Bitlis">Bitlis</option>
+                                <option value="Bolu">Bolu</option>
+                                <option value="Burdur">Burdur</option>
+                                <option value="Bursa">Bursa</option>
+                                <option value="Çanakkale">Çanakkale</option>
+                                <option value="Çankırı">Çankırı</option>
+                                <option value="Çorum">Çorum</option>
+                                <option value="Denizli">Denizli</option>
+                                <option value="Diyarbakır">Diyarbakır</option>
+                                <option value="Düzce">Düzce</option>
+                                <option value="Edirne">Edirne</option>
+                                <option value="Elazığ">Elazığ</option>
+                                <option value="Erzincan">Erzincan</option>
+                                <option value="Erzurum">Erzurum</option>
+                                <option value="Eskişehir">Eskişehir</option>
+                                <option value="Gaziantep">Gaziantep</option>
+                                <option value="Giresun">Giresun</option>
+                                <option value="Gümüşhane">Gümüşhane</option>
+                                <option value="Hakkari">Hakkari</option>
+                                <option value="Hatay">Hatay</option>
+                                <option value="Iğdır">Iğdır</option>
+                                <option value="Isparta">Isparta</option>
+                                <option value="İstanbul">İstanbul</option>
+                                <option value="İzmir">İzmir</option>
+                                <option value="Kahramanmaraş">Kahramanmaraş</option>
+                                <option value="Karabük">Karabük</option>
+                                <option value="Karaman">Karaman</option>
+                                <option value="Kars">Kars</option>
+                                <option value="Kastamonu">Kastamonu</option>
+                                <option value="Kayseri">Kayseri</option>
+                                <option value="Kırıkkale">Kırıkkale</option>
+                                <option value="Kırklareli">Kırklareli</option>
+                                <option value="Kırşehir">Kırşehir</option>
+                                <option value="Kilis">Kilis</option>
+                                <option value="Kocaeli">Kocaeli</option>
+                                <option value="Konya">Konya</option>
+                                <option value="Kütahya">Kütahya</option>
+                                <option value="Malatya">Malatya</option>
+                                <option value="Manisa">Manisa</option>
+                                <option value="Mardin">Mardin</option>
+                                <option value="Mersin">Mersin</option>
+                                <option value="Muğla">Muğla</option>
+                                <option value="Muş">Muş</option>
+                                <option value="Nevşehir">Nevşehir</option>
+                                <option value="Niğde">Niğde</option>
+                                <option value="Ordu">Ordu</option>
+                                <option value="Osmaniye">Osmaniye</option>
+                                <option value="Rize">Rize</option>
+                                <option value="Sakarya">Sakarya</option>
+                                <option value="Samsun">Samsun</option>
+                                <option value="Şanlıurfa">Şanlıurfa</option>
+                                <option value="Siirt">Siirt</option>
+                                <option value="Sinop">Sinop</option>
+                                <option value="Sivas">Sivas</option>
+                                <option value="Şırnak">Şırnak</option>
+                                <option value="Tekirdağ">Tekirdağ</option>
+                                <option value="Tokat">Tokat</option>
+                                <option value="Trabzon">Trabzon</option>
+                                <option value="Tunceli">Tunceli</option>
+                                <option value="Uşak">Uşak</option>
+                                <option value="Van">Van</option>
+                                <option value="Yalova">Yalova</option>
+                                <option value="Yozgat">Yozgat</option>
+                                <option value="Zonguldak">Zonguldak</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ilce">İlçe:</label>
+                            <select id="ilce" name="ilce" class="form-control">
+                                <option value="">Önce il seçiniz</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-secondary">Ara</button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="results" class="results-container">
+                <div id="loading" class="loading">Yükleniyor...</div>
+                <div id="resultsContent"></div>
+            </div>
+        </section>
+    </main>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-routing-machine/3.2.12/leaflet-routing-machine.min.js"></script>
+    <script>
+        // İl-İlçe Verisi (Örnek)
+        const ilceler = {
+            "İstanbul": ["Adalar", "Arnavutköy", "Ataşehir", "Avcılar", "Bağcılar", "Bahçelievler", "Bakırköy", "Başakşehir", "Bayrampaşa", "Beşiktaş", "Beykoz", "Beylikdüzü", "Beyoğlu", "Büyükçekmece", "Çatalca", "Çekmeköy", "Esenler", "Esenyurt", "Eyüpsultan", "Fatih", "Gaziosmanpaşa", "Güngören", "Kadıköy", "Kağıthane", "Kartal", "Küçükçekmece", "Maltepe", "Pendik", "Sancaktepe", "Sarıyer", "Silivri", "Sultanbeyli", "Sultangazi", "Şile", "Şişli", "Tuzla", "Ümraniye", "Üsküdar", "Zeytinburnu"],
+            "Ankara": ["Altındağ", "Çankaya", "Etimesgut", "Keçiören", "Mamak", "Sincan", "Yenimahalle", "Akyurt", "Ayaş", "Bala", "Beypazarı", "Çamlıdere", "Çubuk", "Elmadağ", "Evren", "Gölbaşı", "Güdül", "Haymana", "Kalecik", "Kazan", "Kızılcahamam", "Nallıhan", "Polatlı", "Şereflikoçhisar"],
+            "İzmir": ["Aliağa", "Balçova", "Bayındır", "Bayraklı", "Bergama", "Beydağ", "Bornova", "Buca", "Çeşme", "Çiğli", "Dikili", "Foça", "Gaziemir", "Güzelbahçe", "Karabağlar", "Karaburun", "Karşıyaka", "Kemalpaşa", "Kınık", "Kiraz", "Konak", "Menderes", "Menemen", "Narlıdere", "Ödemiş", "Seferihisar", "Selçuk", "Tire", "Torbalı", "Urla"],
+            "Adana": ["Aladağ", "Ceyhan", "Çukurova", "Feke", "İmamoğlu", "Karaisalı", "Karataş", "Kozan", "Pozantı", "Saimbeyli", "Sarıçam", "Seyhan", "Tufanbeyli", "Yumurtalık", "Yüreğir"],
+            "Adıyaman": ["Merkez", "Besni", "Çelikhan", "Gerger", "Gölbaşı", "Kahta", "Samsat", "Sincik", "Tut"],
+            // Diğer illerin ilçelerini buraya ekleyin...
+        };
+
+        // İl seçimine göre ilçeleri güncelle
+        document.getElementById('il').addEventListener('change', function() {
+            const il = this.value;
+            const ilceSelect = document.getElementById('ilce');
+
+            // İlçe listesini temizle
+            ilceSelect.innerHTML = '<option value="">Seçiniz</option>';
+
+            if (il && ilceler[il]) {
+                // Seçilen ilin ilçelerini ekle
+                ilceler[il].forEach(ilce => {
+                    const option = document.createElement('option');
+                    option.value = ilce;
+                    option.textContent = ilce;
+                    ilceSelect.appendChild(option);
+                });
+            } else {
+                ilceSelect.innerHTML = '<option value="">Önce il seçiniz</option>';
+            }
+        });
+
+        // Form gönderimini dinle
+        document.getElementById('locationForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const il = document.getElementById('il').value;
+            const ilce = document.getElementById('ilce').value;
+
+            // Yükleniyor animasyonunu göster
+            document.getElementById('loading').style.display = 'block';
+
+            // Sunucuya istek yapılıyormuş gibi yapay gecikme
+            setTimeout(function() {
+                // Yükleniyor animasyonunu gizle
+                document.getElementById('loading').style.display = 'none';
+
+                // Sonuçları göster
+                document.getElementById('resultsContent').innerHTML = `
+                    <div class="alert alert-success">
+                        <h4>${il}, ${ilce} bölgesindeki toplanma alanları:</h4>
+                        <ul>
+                            <li>Örnek Toplanma Alanı 1 - 1.5 km uzaklıkta</li>
+                            <li>Örnek Toplanma Alanı 2 - 2.3 km uzaklıkta</li>
+                            <li>Örnek Toplanma Alanı 3 - 3.1 km uzaklıkta</li>
+                        </ul>
+                    </div>
+                `;
+            }, 1500);
+        });
+
+        // Konum paylaşma butonunu dinle
+        document.getElementById('shareLocationBtn').addEventListener('click', function() {
+            const locationStatus = document.getElementById('locationStatus');
+            const mapContainer = document.getElementById('mapContainer');
+
+            locationStatus.innerHTML = '<div class="alert alert-info">Konum bilginiz alınıyor...</div>';
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    // Başarılı olduğunda
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+
+                        locationStatus.innerHTML = `
+                            <div class="alert alert-success">
+                                Konum başarıyla alındı!<br>
+                                Enlem: ${lat.toFixed(6)}<br>
+                                Boylam: ${lng.toFixed(6)}
+                            </div>
+                        `;
+
+                        // Harita görüntüleme kısmını göster
+                        mapContainer.style.display = 'block';
+
+                        // Haritayı yükle ve kullanıcının konumunu göster
+                        initMap(lat, lng);
+
+                        // Yükleniyor animasyonunu göster
+                        document.getElementById('loading').style.display = 'block';
+
+                        // Sunucuya istek yapılıyormuş gibi yapay gecikme
+                        setTimeout(function() {
+                            // Yükleniyor animasyonunu gizle
+                            document.getElementById('loading').style.display = 'none';
+
+                            // Sonuçları göster
+                            document.getElementById('resultsContent').innerHTML = `
+                                <div class="alert alert-success">
+                                    <h4>Konumunuza en yakın toplanma alanları:</h4>
+                                    <ul>
+                                        <li>En Yakın Toplanma Alanı - 0.8 km uzaklıkta</li>
+                                        <li>İkinci Toplanma Alanı - 1.2 km uzaklıkta</li>
+                                        <li>Üçüncü Toplanma Alanı - 1.9 km uzaklıkta</li>
+                                    </ul>
+                                </div>
+                            `;
+                        }, 1500);
+                    },
+                    // Hata durumunda
+                    function(error) {
+                        let errorMessage;
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = "Konum izni reddedildi.";
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = "Konum bilgisi mevcut değil.";
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = "Konum isteği zaman aşımına uğradı.";
+                                break;
+                            case error.UNKNOWN_ERROR:
+                                errorMessage = "Bilinmeyen bir hata oluştu.";
+                                break;
+                        }
+                        locationStatus.innerHTML = `<div class="alert alert-danger">${errorMessage}</div>`;
+                    }
+                );
+            } else {
+                locationStatus.innerHTML = '<div class="alert alert-danger">Tarayıcınız konum özelliğini desteklemiyor.</div>';
+            }
+        });
+
+        // Navbar toggle butonu için
+        document.querySelector('.navbar-toggler').addEventListener('click', function() {
+            document.querySelector('.navbar-collapse').classList.toggle('show');
+        });
+
+        // Harita işlemleri için global değişkenler
+        let map;
+        let userMarker;
+        let toplanmaMarkers = [];
+        let routingControl;
+
+        // Harita oluşturma fonksiyonu
+        function initMap(lat, lng) {
+            // Kullanıcı konumu
+            const userLocation = [lat, lng];
+
+            // Harita oluştur
+            map = L.map('mapContainer').setView(userLocation, 15);
+
+            // OpenStreetMap katmanı ekle
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Kullanıcı konumu için marker
+            const userIcon = L.divIcon({
+                className: 'user-marker',
+                html: '<div style="background-color:#4285F4; width:20px; height:20px; border-radius:50%; border:3px solid white;"></div>',
+                iconSize: [20, 20],
+                iconAnchor: [10, 10]
+            });
+
+            userMarker = L.marker(userLocation, {
+                icon: userIcon,
+                title: 'Konumunuz'
+            }).addTo(map);
+
+            // Kullanıcıya bilgi penceresi
+            userMarker.bindPopup('<div style="text-align:center;"><strong>Şu an buradasınız</strong></div>').openPopup();
+
+            // En yakın toplanma alanlarını bul (örnek veriler)
+            const toplanmaAlanlari = [
+                {
+                    konum: [lat + 0.005, lng + 0.003],
+                    isim: 'Merkez Toplanma Alanı',
+                    kapasite: '5000 kişi',
+                    mesafe: 0.8
+                },
+                {
+                    konum: [lat - 0.003, lng + 0.007],
+                    isim: 'Park Toplanma Alanı',
+                    kapasite: '3000 kişi',
+                    mesafe: 1.2
+                },
+                {
+                    konum: [lat + 0.008, lng - 0.004],
+                    isim: 'Okul Bahçesi Toplanma Alanı',
+                    kapasite: '2500 kişi',
+                    mesafe: 1.9
+                }
+            ];
+
+            // Toplanma noktası simgesi
+            const toplanmaIcon = L.divIcon({
+                className: 'toplanma-marker',
+                html: '<div style="background-color:#4CAF50; width:24px; height:24px; border-radius:50%; border:3px solid white; display:flex; justify-content:center; align-items:center;"><i class="fas fa-map-marker-alt" style="color:white; font-size:12px;"></i></div>',
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            // Toplanma alanlarını haritada göster
+            toplanmaAlanlari.forEach((alan, index) => {
+                // Toplanma alanı marker'ı
+                const marker = L.marker(alan.konum, {
+                    icon: toplanmaIcon,
+                    title: alan.isim
+                }).addTo(map);
+
+                // Popup içeriği
+                const popupContent = `
+                    <div style="text-align:center; padding: 5px;">
+                        <strong>${alan.isim}</strong><br>
+                        Kapasite: ${alan.kapasite}<br>
+                        Mesafe: ${alan.mesafe} km
+                    </div>
+                `;
+
+                // Popup ekle
+                marker.bindPopup(popupContent);
+
+                // Tıklama olayı ekle
+                marker.on('click', function() {
+                    // Popup'ı aç
+                    marker.openPopup();
+
+                    // Varsa önceki rotayı kaldır
+                    if (routingControl) {
+                        map.removeControl(routingControl);
+                    }
+
+                    // Yeni rota oluştur
+                    routingControl = L.Routing.control({
+                        waypoints: [
+                            L.latLng(userLocation[0], userLocation[1]),
+                            L.latLng(alan.konum[0], alan.konum[1])
+                        ],
+                        routeWhileDragging: false,
+                        lineOptions: {
+                            styles: [
+                                {color: '#1976D2', opacity: 0.8, weight: 5}
+                            ]
+                        },
+                        createMarker: function() { return null; },
+                        addWaypoints: false,
+                        fitSelectedRoutes: true
+                    }).addTo(map);
+
+                    // Sonuçları göster
+                    document.getElementById('resultsContent').innerHTML = `
+                        <div class="alert alert-success">
+                            <h4>Seçilen toplanma alanı: ${alan.isim}</h4>
+                            <ul>
+                                <li>Mesafe: ${alan.mesafe} km</li>
+                                <li>Kapasite: ${alan.kapasite}</li>
+                                <li>Tahmini varış süresi: ${Math.round(alan.mesafe * 12)} dakika (yürüyerek)</li>
+                            </ul>
+                            <div class="mt-3">
+                                <button class="btn btn-primary" onclick="navigateToToplanmaAlani(${index})">
+                                    <i class="fas fa-directions me-2"></i>Yol Tarifi Al
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Marker'ı kaydet
+                toplanmaMarkers.push({
+                    marker: marker,
+                    data: alan
+                });
+            });
+
+            // En yakın toplanma alanını otomatik seç
+            setTimeout(function() {
+                toplanmaMarkers[0].marker.fire('click');
+            }, 1000);
+
+            // En yakın toplanma alanlarını liste olarak göster
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('resultsContent').innerHTML = `
+                <div class="alert alert-success">
+                    <h4>Konumunuza en yakın toplanma alanları:</h4>
+                    <ul>
+                        ${toplanmaAlanlari.map((alan, index) => `
+                            <li>
+                                <a href="#" onclick="selectToplanmaAlani(${index}); return false;">
+                                    ${alan.isim} - ${alan.mesafe} km uzaklıkta (${Math.round(alan.mesafe * 12)} dk yürüme)
+                                </a>
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>
+            `;
+        }
+
+        // Seçilen toplanma alanını gösterme fonksiyonu
+        function selectToplanmaAlani(index) {
+            if (toplanmaMarkers[index]) {
+                toplanmaMarkers[index].marker.fire('click');
+
+                // Haritayı seçilen marker'a odakla
+                map.setView(toplanmaMarkers[index].marker.getLatLng(), 16);
+            }
+        }
+
+        // Yol tarifi alma fonksiyonu
+        function navigateToToplanmaAlani(index) {
+            if (toplanmaMarkers[index]) {
+                const alan = toplanmaMarkers[index].data;
+                const latLng = toplanmaMarkers[index].marker.getLatLng();
+
+                // OpenStreetMap yol tarifi URL'si
+                const directionsUrl = `https://www.openstreetmap.org/directions?engine=fossgis_osrm_foot&route=${userMarker.getLatLng().lat},${userMarker.getLatLng().lng};${latLng.lat},${latLng.lng}`;
+
+                // Yeni sekmede aç
+                window.open(directionsUrl, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>

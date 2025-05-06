@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yardım Talebi Oluştur - Afet Yardım Merkezi</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-red: #e30613;
+            --secondary-red: #ff3b43;
+            --dark-red: #b80510;
+            --light-gray: #f9f9f9;
+            --dark-gray: #333333;
+            --box-shadow: 0 10px 15px rgba(227, 6, 19, 0.1);
+            --border-radius: 12px;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--dark-gray);
+            padding-bottom: 3rem;
+        }
+
+        .navbar {
+            background-color: var(--primary-red) !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem 1rem;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: white !important;
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.85);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+
+        .form-card {
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            margin-top: 2rem;
+            border: none;
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .form-header {
+            background: linear-gradient(135deg, var(--dark-red), var(--primary-red));
+            color: white;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .form-header h2 {
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-body {
+            padding: 2rem;
+            background-color: white;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--dark-gray);
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-red);
+            box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-red);
+            border-color: var(--primary-red);
+            box-shadow: 0 2px 5px rgba(227, 6, 19, 0.3);
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-red);
+            border-color: var(--secondary-red);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(227, 6, 19, 0.4);
+        }
+
+        .btn-outline-primary {
+            color: var(--primary-red);
+            border-color: var(--primary-red);
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-primary:hover {
+            background-color: var(--primary-red);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(227, 6, 19, 0.2);
+        }
+
+        .form-section-title {
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark-gray);
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .required-field::after {
+            content: "*";
+            color: var(--primary-red);
+            margin-left: 4px;
+        }
+
+        .emergency-pulse {
+            display: inline-block;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            background-color: var(--primary-red);
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(227, 6, 19, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(227, 6, 19, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(227, 6, 19, 0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .form-step {
+            margin-bottom: 2rem;
+        }
+
+        .form-note {
+            background-color: rgba(227, 6, 19, 0.05);
+            border-left: 4px solid var(--primary-red);
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+        }
+
+        .field-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .emergency-badge {
+            background-color: var(--primary-red);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+        <!-- Navbar -->
+{% include "navbar.html" %}
+    <!-- Form Section -->
+    <div class="container">
+        <div class="card form-card">
+            <div class="form-header">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h2><i class="fas fa-file-medical me-3"></i>Yeni Yardım Talebi Oluştur</h2>
+                        <p class="mb-0">Lütfen ihtiyaçlarınızı belirtmek için aşağıdaki formu doldurunuz.</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                        <span class="emergency-badge">
+                            <div class="emergency-pulse"></div>Acil Yardım Talebi
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-body">
+                <form id="aidRequestForm" method="post" action="/aid/create_request">
+                    <!-- Kişisel Bilgiler -->
+                    <div class="form-step">
+                        <h4 class="form-section-title">1. Kişisel Bilgiler</h4>
+                        <div class="row">
+                            <div class="col-md-6 field-group">
+                                <label for="name" class="required-field">Adı</label>
+                                <input type="text" class="form-control" name="name" id="name" required>
+                            </div>
+                            <div class="col-md-6 field-group">
+                                <label for="surname" class="required-field">Soyadı</label>
+                                <input type="text" class="form-control" name="surname" id="surname" required>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4 field-group">
+                                <label for="age" class="required-field">Yaş</label>
+                                <input type="number" class="form-control" name="age" id="age" required min="1" max="120">
+                            </div>
+                            <div class="col-md-4 field-group">
+                                <label for="phone" class="required-field">Telefon</label>
+                                <input type="tel" class="form-control" name="phone" id="phone" required placeholder="05xx xxx xx xx">
+                            </div>
+                            <div class="col-md-4 field-group">
+                                <label for="email">E-posta</label>
+                                <input type="email" class="form-control" name="email" id="email" placeholder="ornek@email.com">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Konum Bilgileri -->
+                    <div class="form-step">
+                        <h4 class="form-section-title">2. Konum Bilgileri</h4>
+                        <div class="row">
+                            <div class="col-12 field-group">
+                                <label for="address" class="required-field">Adres</label>
+                                <textarea class="form-control" name="address" id="address" rows="3" required placeholder="Lütfen tam adresinizi ve belirleyici işaretleri belirtin"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-note">
+                            <i class="fas fa-info-circle me-2"></i> Yardımın doğru yere ulaşması için adres bilgilerinizi mümkün olduğunca detaylı yazınız.
+                        </div>
+                    </div>
+
+                    <!-- İhtiyaç Bilgileri -->
+                    <div class="form-step">
+                        <h4 class="form-section-title">3. İhtiyaç Bilgileri</h4>
+                        <div class="row">
+                            <div class="col-md-6 field-group">
+                                <label for="patients" class="required-field">Yanınızdaki Kişi Sayısı</label>
+                                <input type="number" class="form-control" name="patients" id="patients" required min="0">
+                            </div>
+
+                        </div>
+                        <div class="field-group">
+                            <label for="needs" class="required-field">İhtiyaçlar</label>
+                            <textarea class="form-control" name="needs" id="needs" rows="4" required placeholder="Lütfen ihtiyaçlarınızı detaylı olarak belirtiniz (gıda, su, ilaç, giyim, vb.)"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Durum Bilgileri -->
+                    <div class="form-step">
+                        <h4 class="form-section-title">4. Durum Bilgileri</h4>
+                        <div class="row">
+                            <div class="col-md-6 field-group">
+                                <label for="health_status" class="required-field">Sağlık Durumu</label>
+                                <textarea class="form-control" name="health_status" id="health_status" rows="3" required placeholder="Sağlık durumunuz veya yanınızdaki kişilerin sağlık sorunları (kronik hastalık, ilaç ihtiyacı, engel durumu vb.)"></textarea>
+                            </div>
+                            <div class="col-md-6 field-group">
+                                <label for="shelter_status" class="required-field">Barınma Durumu</label>
+                                <textarea class="form-control" name="shelter_status" id="shelter_status" rows="3" required placeholder="Barınma durumunuz (çadır, ev, açık alan vb.)"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="form-note">
+                        <i class="fas fa-exclamation-circle me-2"></i> <strong>Not:</strong> Yardım talebiniz ekibimiz tarafından değerlendirildikten sonra öncelik sırasına göre işleme alınacaktır. Acil durumlarda lütfen aşağıdaki formda belirtilen acil durum telefon numaralarını da arayınız.
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="/aid" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left me-2"></i> Geri Dön
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i> Talebi Gönder
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- İletişim Bilgileri -->
+        <div class="card form-card mt-4">
+            <div class="card-body p-4">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-phone-alt me-2 text-danger"></i> Acil Durum İletişim</h5>
+                        <p class="mb-2"><strong>AFAD:</strong> 122</p>
+                        <p class="mb-2"><strong>Ambulans:</strong> 112</p>
+                        <p class="mb-2"><strong>Yardım Merkezi:</strong> 0850 XXX XX XX</p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <h5><i class="fas fa-info-circle me-2 text-danger"></i> Bilgilendirme</h5>
+                        <p class="mb-0">Yardım talebiniz kaydedildikten sonra <br>size SMS veya e-posta ile bilgilendirme yapılacaktır.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Form validation
+        document.getElementById('aidRequestForm').addEventListener('submit', function(event) {
+            let form = this;
+            let isValid = true;
+
+            let requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(function(field) {
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                event.preventDefault();
+                alert('Lütfen tüm zorunlu alanları doldurunuz.');
+            }
+        });
+    </script>
+</body>
+</html>

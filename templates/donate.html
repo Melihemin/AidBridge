@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Bağış Yap</title>
+  <style>
+    /* Genel Stil */
+    :root {
+      --primary: #e53935;
+      --primary-dark: #b71c1c;
+      --secondary: #2196F3;
+      --text-dark: #333;
+      --text-light: #fff;
+      --bg-light: #f9f9f9;
+      --border-radius: 8px;
+      --box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dark);
+      opacity: 1;
+      transition: opacity 0.5s;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 550px;
+      margin: 30px auto;
+      padding: 30px;
+      background: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      animation: slideUp 0.6s ease-out;
+    }
+
+    h2 {
+      color: var(--primary);
+      font-size: 2em;
+      margin-bottom: 25px;
+      position: relative;
+      padding-bottom: 12px;
+      text-align: center;
+    }
+
+    h2::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: var(--primary);
+      border-radius: 2px;
+    }
+
+    /* Form ve Giriş Alanları */
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--text-dark);
+    }
+
+    select, input, textarea {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--border-radius);
+      border: 1px solid #ddd;
+      font-size: 1em;
+      transition: var(--transition);
+      box-sizing: border-box;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+
+    textarea {
+      height: 120px;
+      resize: none;
+    }
+
+    /* Buton Tasarımları */
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: var(--border-radius);
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      border: none;
+      margin-top: 10px;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--text-light);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: #555;
+      color: var(--text-light);
+    }
+
+    .btn-secondary:hover {
+      background-color: #333;
+      transform: translateY(-2px);
+    }
+
+    /* Bağış İkon Kartları */
+    .donation-types {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 25px 0;
+    }
+
+    .donation-card {
+      flex: 1;
+      padding: 15px 10px;
+      background-color: var(--bg-light);
+      border-radius: var(--border-radius);
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .donation-card.active {
+      background-color: rgba(229, 57, 53, 0.1);
+      border: 1px solid var(--primary);
+    }
+
+    .donation-card i {
+      font-size: 24px;
+      color: var(--primary);
+      margin-bottom: 8px;
+      transition: var(--transition);
+    }
+
+    .donation-card span {
+      font-size: 0.8em;
+      font-weight: 500;
+    }
+
+    .donation-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .payment-output {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      padding: 15px;
+      line-height: 1.6;
+      font-size: 0.95em;
+    }
+
+    .payment-output .iban {
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      font-family: monospace;
+      font-size: 1.05em;
+    }
+
+    /* Adres Çıktı Alanı */
+    .address-output {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      padding: 15px;
+      line-height: 1.5;
+      font-size: 0.95em;
+    }
+
+    /* Animasyonlar */
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    /* Responsive Tasarım */
+    @media (max-width: 600px) {
+      .container {
+        margin: 15px;
+        padding: 20px;
+      }
+
+      .donation-types {
+        flex-wrap: wrap;
+      }
+
+      .donation-card {
+        flex: 1 0 45%;
+        margin-bottom: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+      <div class="container">
+    <h2>Bağış Bilgileri</h2>
+
+    <!-- Bağış Tipi Kartları -->
+    <div class="donation-types">
+      <div class="donation-card" data-type="Para Bağışı">
+        <i class="fas fa-credit-card"></i>
+        <span>Para</span>
+      </div>
+      <div class="donation-card" data-type="Yiyecek Bağışı">
+        <i class="fas fa-utensils"></i>
+        <span>Yiyecek</span>
+      </div>
+      <div class="donation-card" data-type="İlaç Bağışı">
+        <i class="fas fa-pills"></i>
+        <span>İlaç</span>
+      </div>
+      <div class="donation-card" data-type="Giysi Bağışı">
+        <i class="fas fa-tshirt"></i>
+        <span>Giysi</span>
+      </div>
+    </div>
+
+    <!-- Bağış Türü Gizli Seçim -->
+    <select id="donationType" style="display: none;">
+      <option value="">Seçiniz</option>
+      <option>Para Bağışı</option>
+      <option>Yiyecek Bağışı</option>
+      <option>İlaç Bağışı</option>
+      <option>Giysi Bağışı</option>
+    </select>
+
+      <div class="form-group amount-group">
+        <label>Bağış Bilgileri</label>
+        <div class="payment-output">
+          <strong>Banka Hesap Bilgileri:</strong><br>
+          <span class="bank-info">Türkiye İş Bankası</span><br>
+          <span class="account-holder">Afet Yardım Derneği</span><br>
+          <span class="iban">IBAN: TR12 3456 7890 1234 5678 9012 34</span><br><br>
+          <strong>Not:</strong> EFT açıklama kısmına "Afet Bağışı" yazınız.
+        </div>
+      </div>
+
+      <div class="form-group address-group" style="display: none;">
+        <label>Teslimat Adresi</label>
+        <div class="address-output">
+          İstanbul Büyükşehir Belediyesi Afet Koordinasyon Merkezi<br>
+          Osmaniye Mahallesi, Çobançeşme Koşuyolu Bulvarı No: 5<br>
+          34146 Bakırköy/İstanbul<br>
+          Tel: 0212 455 1300
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="extraInfo">Not:</label>
+        <p><b>Bağışınız için teşekkür ederiz.
+Değerli desteğiniz bizim için çok kıymetli. Bağışınızın doğrulanması için en kısa sürede sizinle iletişime geçeceğiz.
+Yardımseverliğinizin topluluğumuzda gerçek bir fark yarattığını unutmayın</b></p>
+      </div>
+    <a href="/">
+      <button type="submit" class="btn btn-primary">Ana sayfa</button>
+        </a>
+    </div>
+
+    <!-- Ana Sayfaya Dön Butonu -->
+ </div>
+
+  <script>
+    function navigateTo(url) {
+      document.body.style.opacity = "0";
+      setTimeout(() => {
+        history.pushState(null, null, url);
+        window.location.href = url;
+      }, 300);
+    }
+
+    // Form doğrulama ve animasyon
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("donationInfo");
+      const donationCards = document.querySelectorAll(".donation-card");
+      const donationTypeSelect = document.getElementById("donationType");
+      const amountGroup = document.querySelector(".amount-group");
+      const addressGroup = document.querySelector(".address-group");
+
+      // Form alanlarını bağış türüne göre göster/gizle
+      function updateFormFields(donationType) {
+        if (donationType === "Para Bağışı") {
+          amountGroup.style.display = "block";
+          addressGroup.style.display = "none";
+        } else if (donationType) {
+          amountGroup.style.display = "none";
+          addressGroup.style.display = "block";
+        }
+      }
+
+      // Bağış türü seçimi değiştiğinde
+      donationTypeSelect.addEventListener("change", () => {
+        updateFormFields(donationTypeSelect.value);
+      });
+
+      // Kart seçimi
+      donationCards.forEach(card => {
+        card.addEventListener("click", () => {
+          // Önceki aktif kartı temizle
+          donationCards.forEach(c => c.classList.remove("active"));
+
+          // Seçilen kartı aktif yap
+          card.classList.add("active");
+
+          // Dropdown'u güncelle
+          donationTypeSelect.value = card.dataset.type;
+
+          // Form alanlarını güncelle
+          updateFormFields(card.dataset.type);
+
+          // Seçim efekti
+          card.style.animation = "pulse 0.4s";
+          setTimeout(() => {
+            card.style.animation = "";
+          }, 400);
+        });
+      });
+
+      // Form gönderimi ve doğrulama artık gerekli değil
+      // Başlangıçta form alanlarını gizle
+      updateFormFields(donationTypeSelect.value);
+    });
+  </script>
+
+</body>
+</html>

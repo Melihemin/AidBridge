@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Türkiye Son Depremler Haritası (4.0+ ML)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+        #header {
+            background-color: #d32f2f;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        #map {
+            height: 75vh;
+            width: 100%;
+        }
+        #info {
+            padding: 20px;
+            background-color: #f5f5f5;
+            height: 15vh;
+            overflow-y: auto;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #d32f2f;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .legend {
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+            line-height: 24px;
+            color: #555;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+        .earthquake-popup {
+            font-size: 14px;
+        }
+        .earthquake-popup .title {
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        .earthquake-popup .info-row {
+            margin: 3px 0;
+        }
+        .earthquake-popup .magnitude {
+            font-weight: bold;
+            color: #d32f2f;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" >Back</a>
+    <div id="map"></div>
+    <div id="info">
+        <h2>Son 10 Deprem (4.0+ ML)</h2>
+        <div id="earthquakeList">
+            <div class="loader"></div>
+            <p>Deprem verileri yükleniyor...</p>
+        </div>
+    </div>
+
+    <script>
+        // Örnek deprem verileri (API çalışmadığında kullanılacak)
+        function getSampleEarthquakeData() {
+            return [
+                {
+                    "eventID": "616193",
+                    "location": "AKDENIZ",
+                    "latitude": 36.1923,
+                    "longitude": 30.3531,
+                    "depth": 8.3,
+                    "type": "ML",
+                    "magnitude": 4.7,
+                    "date": "2025-05-02T14:27:36"
+                },
+                {
+                    "eventID": "616121",
+                    "location": "HEKIMHAN-MALATYA",
+                    "latitude": 38.7363,
+                    "longitude": 37.9741,
+                    "depth": 6.9,
+                    "type": "ML",
+                    "magnitude": 4.5,
+                    "date": "2025-05-01T21:15:23"
+                },
+                {
+                    "eventID": "616089",
+                    "location": "ELBISTAN-KAHRAMANMARAS",
+                    "latitude": 38.2011,
+                    "longitude": 37.2183,
+                    "depth": 7.0,
+                    "type": "ML",
+                    "magnitude": 5.2,
+                    "date": "2025-05-01T18:33:11"
+                },
+                {
+                    "eventID": "616025",
+                    "location": "SAMANDAG-HATAY",
+                    "latitude": 36.0871,
+                    "longitude": 35.9441,
+                    "depth": 10.2,
+                    "type": "ML",
+                    "magnitude": 4.1,
+                    "date": "2025-04-30T15:11:45"
+                },
+                {
+                    "eventID": "615983",
+                    "location": "KARLIOVA-BINGOL",
+                    "latitude": 39.2873,
+                    "longitude": 40.9361,
+                    "depth": 5.5,
+                    "type": "ML",
+                    "magnitude": 4.3,
+                    "date": "2025-04-30T09:20:08"
+                },
+                {
+                    "eventID": "615879",
+                    "location": "GOKCEADA-CANAKKALE",
+                    "latitude": 40.1421,
+                    "longitude": 25.8341,
+                    "depth": 9.8,
+                    "type": "ML",
+                    "magnitude": 4.0,
+                    "date": "2025-04-29T14:55:12"
+                },
+                {
+                    "eventID": "615802",
+                    "location": "SEFERIHISAR-IZMIR",
+                    "latitude": 38.0123,
+                    "longitude": 26.9124,
+                    "depth": 6.7,
+                    "type": "ML",
+                    "magnitude": 4.2,
+                    "date": "2025-04-28T22:33:41"
+                },
+                {
+                    "eventID": "615723",
+                    "location": "VAN GOLU",
+                    "latitude": 38.5512,
+                    "longitude": 42.7231,
+                    "depth": 12.1,
+                    "type": "ML",
+                    "magnitude": 4.4,
+                    "date": "2025-04-28T16:02:05"
+                },
+                {
+                    "eventID": "615681",
+                    "location": "BAYKAN-SIIRT",
+                    "latitude": 38.1341,
+                    "longitude": 41.8091,
+                    "depth": 8.3,
+                    "type": "ML",
+                    "magnitude": 4.2,
+                    "date": "2025-04-27T19:15:37"
+                },
+                {
+                    "eventID": "615622",
+                    "location": "MARMARA DENIZI",
+                    "latitude": 40.8162,
+                    "longitude": 27.9732,
+                    "depth": 10.8,
+                    "type": "ML",
+                    "magnitude": 4.9,
+                    "date": "2025-04-27T10:48:19"
+                }
+            ];
+        }
+
+        // Türkiye'nin merkezi koordinatları
+        const turkeyCenter = [39.0, 35.0];
+
+        // Harita oluşturma
+        const map = L.map('map').setView(turkeyCenter, 6);
+
+        // OpenStreetMap katmanı ekleme
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Büyüklük bazında renk belirleme fonksiyonu
+        function getColor(magnitude) {
+            return magnitude >= 6.0 ? '#800026' :
+                   magnitude >= 5.5 ? '#BD0026' :
+                   magnitude >= 5.0 ? '#E31A1C' :
+                   magnitude >= 4.5 ? '#FC4E2A' :
+                   magnitude >= 4.0 ? '#FD8D3C' :
+                   '#FFEDA0';
+        }
+
+        // Büyüklük bazında çap belirleme fonksiyonu
+        function getRadius(magnitude) {
+            return magnitude * 4;
+        }
+
+        // Lejant ekleme
+        const legend = L.control({position: 'bottomright'});
+        legend.onAdd = function (map) {
+            const div = L.DomUtil.create('div', 'legend');
+            const grades = [4.0, 4.5, 5.0, 5.5, 6.0];
+            let labels = [];
+
+            div.innerHTML = '<h4>Deprem Büyüklüğü</h4>';
+
+            // Lejant için renk kutuları ve etiketleri oluştur
+            for (let i = 0; i < grades.length; i++) {
+                const from = grades[i];
+                const to = grades[i + 1];
+
+                labels.push(
+                    '<i style="background:' + getColor(from) + '"></i> ' +
+                    from + (to ? '&ndash;' + to : '+'));
+            }
+
+            div.innerHTML += labels.join('<br>');
+            return div;
+        };
+        legend.addTo(map);
+
+        // Tarih formatını düzenleme fonksiyonu
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('tr-TR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        // AFAD API'sinden deprem verilerini çekme
+        async function fetchEarthquakes() {
+            try {
+                // CORS proxy ile verileri çekmeyi dene
+                const corsProxy = 'https://corsproxy.io/?';
+                const apiUrl = 'https://deprem.afad.gov.tr/apiv2/event/filter?minmag=4.0&orderby=timedesc&limit=10';
+
+                // Önce CORS proxy ile dene
+                let response, data;
+                try {
+                    response = await fetch(corsProxy + encodeURIComponent(apiUrl));
+                    data = await response.json();
+                    processEarthquakeData(data); // Deprem verilerini işle
+                    return; // Başarılı olursa fonksiyondan çık
+                } catch (proxyError) {
+                    console.error('CORS proxy ile veri alınamadı, hazır verileri kullanıyoruz:', proxyError);
+                    // API çağrısı başarısız olursa hazır veriler kullan
+                    data = getSampleEarthquakeData();
+                    processEarthquakeData(data); // Örnek verileri işle
+                    document.getElementById('info').innerHTML += '<p style="color: #d32f2f; text-align: center; font-style: italic;">Not: AFAD API\'sine erişilemediği için örnek veriler kullanılmıştır.</p>';
+                    return; // Fonksiyondan çık
+                }
+
+                // Deprem verileri için bir grup oluştur
+                const earthquakes = L.layerGroup().addTo(map);
+
+                // Deprem listesi HTML'i
+                let listHtml = '';
+
+                // Her deprem için haritaya işaret ekle
+                data.forEach((quake, index) => {
+                    const lat = quake.latitude;
+                    const lng = quake.longitude;
+                    const magnitude = quake.magnitude;
+                    const depth = quake.depth;
+                    const location = quake.location;
+                    const date = formatDate(quake.date);
+
+                    // Deprem noktasını haritaya ekle
+                    const circle = L.circleMarker([lat, lng], {
+                        radius: getRadius(magnitude),
+                        fillColor: getColor(magnitude),
+                        color: '#000',
+                        weight: 1,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(earthquakes);
+
+                    // Popup içeriği
+                    const popupContent = `
+                        <div class="earthquake-popup">
+                            <div class="title">${location}</div>
+                            <div class="info-row">Tarih: ${date}</div>
+                            <div class="info-row">Büyüklük: <span class="magnitude">${magnitude} ML</span></div>
+                            <div class="info-row">Derinlik: ${depth} km</div>
+                            <div class="info-row">Koordinatlar: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
+                        </div>
+                    `;
+
+                    // Popup ekle
+                    circle.bindPopup(popupContent);
+
+                    // Deprem listesine ekle
+                    listHtml += `
+                        <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
+                            <strong>${index + 1}. ${location}</strong> -
+                            <span style="color: ${getColor(magnitude)}; font-weight: bold;">${magnitude} ML</span><br>
+                            Tarih: ${date} | Derinlik: ${depth} km
+                        </div>
+                    `;
+                });
+
+                // Listeyi HTML'e ekle
+                document.getElementById('earthquakeList').innerHTML = listHtml;
+
+                // İlk depreme zoom yap (en son olan)
+                if (data.length > 0) {
+                    map.setView([data[0].latitude, data[0].longitude], 8);
+                }
+
+                // Haritanın altında bir not ekle
+                if (!response) {
+                    document.getElementById('info').innerHTML += '<p style="color: #d32f2f; text-align: center; font-style: italic;">Not: AFAD API\'sine erişilemediği için örnek veriler kullanılmıştır.</p>';
+                }
+
+            } catch (error) {
+                console.error('Deprem verileri alınırken hata oluştu:', error);
+                // Hazır verileri kullan
+                const sampleData = getSampleEarthquakeData();
+                processEarthquakeData(sampleData);
+                document.getElementById('info').innerHTML += '<p style="color: #d32f2f; text-align: center; font-style: italic;">Not: API verilerine erişilemediği için örnek veriler kullanılmıştır.</p>';
+            }
+        }
+
+        // Deprem verilerini işleme fonksiyonu
+        function processEarthquakeData(data) {
+            // Deprem verileri için bir grup oluştur
+            const earthquakes = L.layerGroup().addTo(map);
+
+            // Deprem listesi HTML'i
+            let listHtml = '';
+
+            // Her deprem için haritaya işaret ekle
+            data.forEach((quake, index) => {
+                const lat = quake.latitude;
+                const lng = quake.longitude;
+                const magnitude = quake.magnitude;
+                const depth = quake.depth;
+                const location = quake.location;
+                const date = formatDate(quake.date);
+
+                // Deprem noktasını haritaya ekle
+                const circle = L.circleMarker([lat, lng], {
+                    radius: getRadius(magnitude),
+                    fillColor: getColor(magnitude),
+                    color: '#000',
+                    weight: 1,
+                    opacity: 1,
+                    fillOpacity: 0.8
+                }).addTo(earthquakes);
+
+                // Popup içeriği
+                const popupContent = `
+                    <div class="earthquake-popup">
+                        <div class="title">${location}</div>
+                        <div class="info-row">Tarih: ${date}</div>
+                        <div class="info-row">Büyüklük: <span class="magnitude">${magnitude} ML</span></div>
+                        <div class="info-row">Derinlik: ${depth} km</div>
+                        <div class="info-row">Koordinatlar: ${lat.toFixed(4)}, ${lng.toFixed(4)}</div>
+                    </div>
+                `;
+
+                // Popup ekle
+                circle.bindPopup(popupContent);
+
+                // Deprem listesine ekle
+                listHtml += `
+                    <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #ddd;">
+                        <strong>${index + 1}. ${location}</strong> -
+                        <span style="color: ${getColor(magnitude)}; font-weight: bold;">${magnitude} ML</span><br>
+                        Tarih: ${date} | Derinlik: ${depth} km
+                    </div>
+                `;
+            });
+
+            // Listeyi HTML'e ekle
+            document.getElementById('earthquakeList').innerHTML = listHtml;
+
+            // İlk depreme zoom yap (en son olan)
+            if (data.length > 0) {
+                map.setView([data[0].latitude, data[0].longitude], 8);
+            }
+        }
+
+        // Sayfa yüklendiğinde deprem verilerini getir
+        window.onload = fetchEarthquakes;
+    </script>
+</body>
+</html>
