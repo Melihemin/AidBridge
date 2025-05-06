@@ -37,7 +37,6 @@ class Aid_request(BaseModel):
     health_status: str
     shelter_status: str
 
-    # Bu Pydantic modelini FastAPI'ye uygun hale getirmek için Form kullanacağız
     def __init__(
         self,
         name: str = Form(..., max_length=100, min_length=1),
@@ -137,7 +136,6 @@ async def create_aid(request: Request):
 @router.post("/new")
 async def new_aid(db: db_dependency, aid_request: Aid_request):
     try:
-        # Burada gelen verileri kullanarak Person modelini oluşturabilirsiniz
         request = Person(
             name=aid_request.name,
             surname=aid_request.surname,
@@ -225,7 +223,7 @@ async def donate(request: Request,db: db_dependency):
 async def export_aid_requests_csv(db: db_dependency):
     requests = db.query(Person).all()
 
-    # UTF-8 BOM ile başlat (Excel'de Türkçe karakter problemi çözülür)
+    # UTF-8 BOM ile başlat 
     output = StringIO()
     output.write('\ufeff')  # <-- BOM EKLENDİ
 
@@ -281,23 +279,4 @@ async def export_aid_requests_csv(db: db_dependency):
         }
     )
 
-"""
-{
-  "name": "Melih Emin",
-  "surname": "Kilicoglu",
-  "age": 20,
-  "phone": "5050083766",
-  "email": "melihemin10@gmail.com",
-  "address": "Gaziantep Sahinbey akkent mahallesi",
-  "patients": 3,
-  "needs": "su bot giysi ekmek",
-  "health_status": "fanenjit astim reflu",
-  "shelter_status": "evimiz saglam ama korkuyorum"
-}
-
-
-1. **İçerik Moderasyonu**:
-    - Uygunsuz içerikleri tespit eder
-    - Spam ve dolandırıcılık girişimlerini engeller
-"""
 
