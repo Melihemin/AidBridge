@@ -2,7 +2,8 @@
 
 A FastAPI-based platform for collecting disaster aid requests, prioritizing them using AI (Google Gemini), and helping authorities respond to critical cases faster and smarter.
 
-[![App Demo]()](https://youtu.be/t63dkufoD70)
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/1280px-YouTube_full-color_icon_%282017%29.svg.png" alt="Your image title" width="250"/>
+https://youtu.be/t63dkufoD70
 
 ## 🚀 Features
 
